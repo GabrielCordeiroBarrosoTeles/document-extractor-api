@@ -17,17 +17,18 @@ load_dotenv()
 class DocumentExtractor:
     def __init__(self):
         self.categories = {
+            'terceiros': ['transferencia', 'pix', 'ted', 'doc', 'comprovante de transferencia', 'mercado pago', 'nubank', 'picpay', 'inter', 'c6 bank', 'banco digital', 'conta digital', 'emprestimo pessoal', 'dinheiro emprestado', 'pagamento pessoa', 'reembolso'],
             'educacao': ['escola', 'universidade', 'curso', 'faculdade', 'ensino', 'educacao', 'colegio', 'instituto', 'pos-graduacao', 'mestrado', 'doutorado', 'mba', 'especializacao', 'tecnico', 'idioma', 'kumon', 'wizard', 'ccaa', 'senac', 'senai', 'etec', 'fatec', 'usp', 'unicamp', 'puc', 'mackenzie', 'fgv', 'insper', 'anhembi', 'unip', 'uninove', 'estacio', 'unopar', 'anhanguera', 'cruzeiro do sul', 'metodista', 'unicsul', 'fiap', 'faap'],
             'treino': ['academia', 'personal', 'fitness', 'treino', 'musculacao', 'crossfit', 'pilates', 'yoga', 'natacao', 'spinning', 'funcional', 'boxe', 'jiu-jitsu', 'karate', 'danca', 'ballet', 'zumba', 'bodytech', 'smartfit', 'bluefit', 'bio ritmo', 'runner', 'competition', 'formula', 'curves', 'contours', 'muay thai', 'capoeira', 'hidroginastica', 'aerobica', 'step', 'pole dance', 'ritmos'],
             'delivery': ['ifood', 'uber', 'rappi', 'delivery', 'entrega', 'comida', 'uber eats', 'james delivery', 'aiqfome', 'loggi', '99food', 'delivery much', 'ze delivery', 'burger king', 'mcdonalds', 'pizza', 'lanche', 'subway', 'kfc', 'dominos', 'pizza hut', 'bobs', 'giraffas', 'habib', 'china in box', 'sushi', 'yakisoba', 'temaki', 'acai', 'sorveteria', 'pizzaria', 'hamburgueria'],
             'saude': ['plano', 'medico', 'hospital', 'clinica', 'saude', 'unimed', 'bradesco saude', 'amil', 'sulamerica', 'farmacia', 'laboratorio', 'exame', 'consulta', 'odontologico', 'psicologia', 'fisioterapia', 'nutricao', 'cardiologia', 'golden cross', 'hapvida', 'notredame', 'drogasil', 'raia', 'pacheco', 'ultrafarma', 'pague menos', 'panvel', 'dermatologista', 'oftalmologista', 'ortopedista', 'ginecologista', 'pediatra', 'psiquiatra', 'neurologista'],
-            'transporte': ['uber', 'taxi', '99', 'combustivel', 'posto', 'transporte', 'metro', 'onibus', 'trem', 'estacionamento', 'pedagio', 'veiculo', 'manutencao', 'seguro auto', 'ipva', 'licenciamento', 'multa', 'gasolina', 'etanol', 'diesel', 'shell', 'petrobras', 'ipiranga', 'ale', 'cabify', 'br', 'esso', 'texaco', 'raizen', 'zona azul', 'detran', 'oficina', 'pneu', 'oleo', 'revisao', 'mecanica', 'lavagem', 'vistoria'],
-            'alimentacao': ['supermercado', 'mercado', 'padaria', 'restaurante', 'lanchonete', 'bar', 'cafeteria', 'pizzaria', 'hamburgueria', 'sorveteria', 'acougue', 'hortifruti', 'feira', 'emporio', 'delicatessen', 'carrefour', 'extra', 'pao de acucar', 'walmart', 'atacadao', 'sam', 'big', 'quitanda', 'bistek', 'assai', 'makro', 'costco', 'dia', 'mambo', 'hirota', 'zona sul', 'st marche', 'casa santa luzia', 'mundial', 'sonda', 'prezunic', 'guanabara', 'sendas', 'comper', 'fort'],
+            'transporte': ['uber viagem', 'taxi corrida', '99 viagem', 'combustivel', 'posto gasolina', 'transporte publico', 'metro', 'onibus', 'trem', 'estacionamento', 'pedagio', 'veiculo', 'manutencao carro', 'seguro auto', 'ipva', 'licenciamento', 'multa transito', 'gasolina', 'etanol', 'diesel', 'shell', 'petrobras', 'ipiranga', 'ale combustivel', 'cabify', 'br postos', 'esso', 'texaco', 'raizen', 'zona azul', 'detran', 'oficina mecanica', 'pneu', 'oleo motor', 'revisao carro', 'mecanica automotiva', 'lavagem carro', 'vistoria veiculo'],
+            'alimentacao': ['supermercado', 'padaria', 'restaurante', 'lanchonete', 'bar', 'cafeteria', 'pizzaria', 'hamburgueria', 'sorveteria', 'acougue', 'hortifruti', 'feira', 'emporio', 'delicatessen', 'carrefour', 'extra', 'pao de acucar', 'walmart', 'atacadao', 'sam', 'big', 'quitanda', 'bistek', 'assai', 'makro', 'costco', 'dia', 'mambo', 'hirota', 'zona sul', 'st marche', 'casa santa luzia', 'mundial', 'sonda', 'prezunic', 'guanabara', 'sendas', 'comper', 'fort'],
             'moradia': ['aluguel', 'condominio', 'iptu', 'agua', 'luz', 'gas', 'internet', 'telefone', 'limpeza', 'portaria', 'seguranca', 'tv cabo', 'sky', 'net', 'vivo', 'oi', 'tim', 'sabesp', 'enel', 'cpfl', 'cemig', 'copel', 'coelba', 'energisa', 'comgas', 'ultragaz', 'liquigas', 'copagaz', 'oi fibra', 'vivo fibra', 'claro', 'administradora', 'zelador', 'sindico'],
             'vestuario': ['roupa', 'calcado', 'sapato', 'tenis', 'camisa', 'calca', 'vestido', 'acessorio', 'bolsa', 'relogio', 'joias', 'oculos', 'chapeu', 'cinto', 'carteira', 'moda', 'zara', 'h&m', 'c&a', 'riachuelo', 'renner', 'marisa', 'pernambucanas', 'nike', 'adidas', 'puma', 'havaianas', 'melissa', 'arezzo', 'schutz', 'farm', 'osklen', 'animale', 'shoulder', 'forum', 'colcci', 'saia', 'blusa', 'jaqueta', 'casaco', 'underwear', 'meia', 'bone'],
             'lazer': ['cinema', 'teatro', 'show', 'evento', 'parque', 'viagem', 'hotel', 'pousada', 'turismo', 'festa', 'balada', 'clube', 'museu', 'exposicao', 'festival', 'ingresso', 'cinemark', 'uci', 'kinoplex', 'cinesystem', 'playarte', 'barcade', 'karaoke', 'boliche', 'shopping', 'parque aquatico', 'hopi hari', 'playcenter', 'beto carrero', 'beach park', 'thermas', 'resort', 'concerto', 'zoologico', 'pub', 'cerveja', 'drink'],
             'tecnologia': ['celular', 'computador', 'notebook', 'tablet', 'software', 'aplicativo', 'streaming', 'netflix', 'spotify', 'amazon prime', 'disney', 'globoplay', 'youtube premium', 'icloud', 'smartphone', 'mouse', 'teclado', 'monitor', 'impressora', 'camera', 'fone', 'carregador', 'cabo', 'memoria', 'hd', 'ssd', 'apple', 'samsung', 'xiaomi', 'motorola', 'lg', 'sony', 'dell', 'hp', 'lenovo', 'asus', 'acer', 'microsoft', 'logitech', 'jbl', 'beats', 'bose', 'iphone', 'ipad', 'macbook', 'playstation', 'xbox', 'nintendo', 'disney plus', 'paramount', 'hbo max', 'apple tv'],
-            'servicos': ['banco', 'cartao', 'emprestimo', 'financiamento', 'seguro', 'advocacia', 'contabilidade', 'consultoria', 'manutencao', 'despachante', 'cartorio', 'correios', 'sedex', 'advogado', 'contador', 'dentista', 'mecanico', 'eletricista', 'encanador', 'pintor', 'faxina', 'lavanderia', 'costura', 'chaveiro', 'vidraceiro', 'marceneiro', 'pedreiro', 'jardineiro', 'diarista', 'baba', 'cuidador', 'seguranca', 'porteiro', 'imobiliaria', 'corretor', 'notario', 'traducao', 'auditoria', 'engenheiro', 'arquiteto'],
+            'servicos': ['cartao credito', 'emprestimo', 'financiamento', 'seguro', 'advocacia', 'contabilidade', 'consultoria', 'manutencao', 'despachante', 'cartorio', 'correios', 'sedex', 'advogado', 'contador', 'dentista', 'mecanico', 'eletricista', 'encanador', 'pintor', 'faxina', 'lavanderia', 'costura', 'chaveiro', 'vidraceiro', 'marceneiro', 'pedreiro', 'jardineiro', 'diarista', 'baba', 'cuidador', 'seguranca', 'porteiro', 'imobiliaria', 'corretor', 'notario', 'traducao', 'auditoria', 'engenheiro', 'arquiteto'],
             'pets': ['veterinario', 'pet shop', 'racao', 'vacina', 'tosa', 'hotel para pets', 'adestramento', 'medicamento animal', 'brinquedo pet', 'cama pet', 'coleira', 'aquario', 'petz', 'cobasi', 'petlove', 'american pet', 'whiskas', 'pedigree', 'royal canin', 'premier', 'golden', 'hills', 'pro plan', 'purina', 'caes', 'gatos', 'hamster', 'coelho', 'tartaruga', 'papagaio', 'peixe', 'passaro', 'gato', 'cachorro', 'casinha', 'gaiola'],
             'beleza': ['salao', 'barbeiro', 'estetica', 'manicure', 'pedicure', 'massagem', 'spa', 'cosmeticos', 'perfume', 'maquiagem', 'cabelo', 'unha', 'sobrancelha', 'depilacao', 'sephora', 'boticario', 'natura', 'avon', 'mary kay', 'loreal', 'nivea', 'dove', 'pantene', 'tresemme', 'elseve', 'garnier', 'maybelline', 'revlon', 'mac', 'clinique', 'lancome', 'chanel', 'dior', 'creme', 'shampoo', 'condicionador', 'tintura', 'escova'],
             'casa': ['moveis', 'decoracao', 'eletrodomesticos', 'ferramentas', 'jardinagem', 'construcao', 'reforma', 'pintura', 'marcenaria', 'eletrica', 'hidraulica', 'ar condicionado', 'sofa', 'cama', 'mesa', 'cadeira', 'guarda-roupa', 'geladeira', 'fogao', 'microondas', 'maquina', 'aspirador', 'ferro', 'panela', 'prato', 'copo', 'talher', 'casas bahia', 'magazine luiza', 'ponto frio', 'americanas', 'submarino', 'tok stok', 'etna', 'mobly', 'madeira madeira', 'leroy merlin', 'telhanorte', 'c&c', 'dicico', 'azulejo', 'piso'],
@@ -162,10 +163,29 @@ class DocumentExtractor:
     def classify_payment(self, text: str) -> str:
         text_lower = text.lower()
         
+        # Prioridade para pagamentos a terceiros
+        if any(keyword in text_lower for keyword in ['transferencia', 'pix', 'ted', 'doc', 'comprovante de transferencia']):
+            return 'terceiros'
+        
+        # Classificação por categoria com pontuação
+        category_scores = {}
+        
         for category, keywords in self.categories.items():
+            score = 0
             for keyword in keywords:
                 if keyword in text_lower:
-                    return category
+                    # Palavras mais específicas têm peso maior
+                    if len(keyword) > 5:
+                        score += 2
+                    else:
+                        score += 1
+            
+            if score > 0:
+                category_scores[category] = score
+        
+        # Retorna categoria com maior pontuação
+        if category_scores:
+            return max(category_scores, key=category_scores.get)
         
         return 'outros'
     

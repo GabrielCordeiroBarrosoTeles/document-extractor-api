@@ -21,6 +21,16 @@ flowchart LR
 
 ## 🚀 Uso Rápido
 
+### Com Docker (Recomendado)
+```bash
+# Iniciar com MySQL
+./start-docker.sh
+
+# Ou manualmente
+docker-compose up -d
+```
+
+### Sem Docker
 ```bash
 # Instalar
 pip install -r requirements.txt
@@ -29,8 +39,10 @@ cp .env.example .env
 
 # Executar
 python api.py
+```
 
-# Testar
+### Testar
+```bash
 open http://localhost:8080/docs
 ```
 
@@ -51,16 +63,28 @@ open http://localhost:8080/docs
 }
 ```
 
-## 🎯 Categorias (25+)
+## 🎯 Categorias (26+)
 
-Educação • Treino • Delivery • Saúde • Transporte • Alimentação • Moradia • Vestuário • Lazer • Tecnologia • Serviços • Pets • Beleza • Casa • Investimentos • Trabalho • Impostos • Doação • Assinaturas • Emergência • Jurídico • Comunicação • Cultura • Esportes • Infantil
+Terceiros • Educação • Treino • Delivery • Saúde • Transporte • Alimentação • Moradia • Vestuário • Lazer • Tecnologia • Serviços • Pets • Beleza • Casa • Investimentos • Trabalho • Impostos • Doação • Assinaturas • Emergência • Jurídico • Comunicação • Cultura • Esportes • Infantil
 
 ## 📁 Estrutura
 
 ```
 ├── api.py              # FastAPI
 ├── extractor.py        # OCR Logic
+├── database.py         # MySQL Manager
+├── docker-compose.yml  # Docker Config
+├── Dockerfile         # Container Build
+├── init.sql           # Database Schema
 ├── requirements.txt    # Dependencies
 ├── .env.example       # Config
+├── start-docker.sh    # Quick Start
 └── uploads/           # Files
 ```
+
+## 🗄️ Banco de Dados
+
+- **MySQL 8.0** via Docker
+- **Tabela**: `documentos`
+- **Porta**: 3306
+- **Dados**: Persistidos em volume Docker

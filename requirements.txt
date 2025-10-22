@@ -3,9 +3,10 @@ uvicorn
 python-multipart
 pytesseract
 Pillow
-opencv-python
+opencv-python-headless
 python-dateutil
 pydantic
 pdf2image
 pymupdf
 python-dotenv
+mysql-connector-python

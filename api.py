@@ -1,10 +1,10 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
-import json
 import os
 import shutil
 from datetime import datetime
 from extractor import DocumentExtractor
+from database import DatabaseManager
 from typing import List
 from dotenv import load_dotenv
 
@@ -22,20 +22,9 @@ DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
 app = FastAPI(title=API_TITLE, version=API_VERSION)
 extractor = DocumentExtractor()
+db = DatabaseManager()
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-def load_json_data():
-    """Carrega dados do arquivo JSON"""
-    if os.path.exists(JSON_FILE):
-        with open(JSON_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return []
-
-def save_json_data(data):
-    """Salva dados no arquivo JSON"""
-    with open(JSON_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
 
 @app.get("/")
 async def root():
@@ -58,16 +47,11 @@ async def processar_documento(file: UploadFile = File(...)):
         
         # Processa o documento
         resultado = extractor.process_document(file_path)
+        resultado["nome_arquivo"] = file.filename
         
-        # Carrega dados existentes
-        dados = load_json_data()
-        
-        # Adiciona novo resultado
-        resultado["id"] = len(dados) + 1
-        dados.append(resultado)
-        
-        # Salva no JSON
-        save_json_data(dados)
+        # Salva no banco
+        doc_id = db.save_document(resultado)
+        resultado["id"] = doc_id
         
         # Remove arquivo temporário
         os.remove(file_path)
@@ -83,44 +67,23 @@ async def processar_documento(file: UploadFile = File(...)):
 @app.get("/documentos")
 async def listar_documentos():
     """Lista todos os documentos processados"""
-    dados = load_json_data()
+    dados = db.get_all_documents()
     return {"total": len(dados), "documentos": dados}
 
 @app.get("/documentos/{doc_id}")
 async def obter_documento(doc_id: int):
     """Obtém um documento específico pelo ID"""
-    dados = load_json_data()
+    documento = db.get_document_by_id(doc_id)
     
-    for doc in dados:
-        if doc.get("id") == doc_id:
-            return doc
+    if not documento:
+        raise HTTPException(status_code=404, detail="Documento não encontrado")
     
-    raise HTTPException(status_code=404, detail="Documento não encontrado")
+    return documento
 
 @app.get("/estatisticas")
 async def obter_estatisticas():
     """Obtém estatísticas dos documentos processados"""
-    dados = load_json_data()
-    
-    if not dados:
-        return {"total": 0, "categorias": {}, "valor_total": 0}
-    
-    categorias = {}
-    valor_total = 0
-    
-    for doc in dados:
-        categoria = doc.get("categoria", "outros")
-        categorias[categoria] = categorias.get(categoria, 0) + 1
-        
-        if doc.get("valor_total"):
-            valor_total += doc["valor_total"]
-    
-    return {
-        "total_documentos": len(dados),
-        "categorias": categorias,
-        "valor_total": valor_total,
-        "valor_medio": valor_total / len(dados) if dados else 0
-    }
+    return db.get_statistics()
 
 if __name__ == "__main__":
     import uvicorn
