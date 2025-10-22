@@ -9,7 +9,8 @@ flowchart LR
     A[Upload] --> B[OCR]
     B --> C[Extração]
     C --> D[Classificação]
-    D --> E[JSON]
+    D --> E[MySQL]
+    E --> F[JSON/API]
 ```
 
 ## 🚀 Funcionalidades
